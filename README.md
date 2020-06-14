@@ -9,13 +9,15 @@ Gin-gonic, Gorm, Postgres
 
 É necessario ter instalado:
 
+Golang: https://golang.org/dl/
+
 VSCode: https://code.visualstudio.com/
  
 Docker: https://www.docker.com/
 
 Docker-Compose: https://docs.docker.com/compose/
 
-Extenções VSCode:
+Extensões VSCode:
 
 - Go
 - Go Critic
