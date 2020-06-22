@@ -1,6 +1,8 @@
 # go-workshop
 Workshop Golang
 
+![Image of Architecture](/media/API.png)
+
 # Framework & Libs
 
 Gin-gonic, Gorm, Postgres
