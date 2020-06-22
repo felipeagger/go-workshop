@@ -1,6 +1,8 @@
 # go-workshop
 Workshop Golang
 
+Slides: media/Golang-Intro.pptx
+
 ![Image of Architecture](/media/API.png)
 
 # Framework & Libs
