@@ -21,7 +21,14 @@ func (user) TableName() string {
 }
 
 type debt struct {
-	ID string `gorm:"primary_key" json:"id"`
+	ID          string    `gorm:"primary_key" json:"id"`
+	UserID      int       `gorm:"not null" json:"user_id"`
+	CompanyName string    `gorm:"not null" json:"company_name"`
+	Value       float64   `gorm:"not null" json:"value"`
+	Date        time.Time `gorm:"default:NOW()" json:"date"`
+	Status      int       `json:"status"`
+	CreatedAt   time.Time `gorm:"default:NOW()" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"default:NOW()" json:"updated_at"`
 }
 
 func (debt) TableName() string {

@@ -2,6 +2,7 @@ package src
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 
 	"github.com/gin-gonic/gin"
@@ -13,19 +14,16 @@ const (
 	dbName = "go_workshop"
 	dbUser = "admin"
 	dbPort = "5432"
-	dbHost = "127.0.0.1"
-	dbPass = "admin"
 )
 
-//var (
-//	dbHost string = os.Getenv("DB_HOST")
-//	dbPass string = os.Getenv("DB_PASSWD")
-//)
+var (
+	dbHost string = os.Getenv("DB_HOST")
+	dbPass string = os.Getenv("DB_PASSWD")
+)
 
 func dbConnect() *gorm.DB {
 
-	urlConn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbName, dbPass)
+	urlConn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass)
 
 	db, err := gorm.Open("postgres", urlConn)
 
@@ -33,7 +31,7 @@ func dbConnect() *gorm.DB {
 	db.DB().SetMaxOpenConns(100)
 
 	if err != nil {
-		fmt.Println("Error on open Conection with Database:")
+		fmt.Println("Error in conection with database!")
 		panic(err)
 	}
 
@@ -45,7 +43,7 @@ func selectAll(table interface{}, c *gin.Context) interface{} {
 	db := dbConnect()
 
 	if err := db.Find(reflect.ValueOf(table).Interface()).Error; err != nil {
-		checkErr(err, 500, c)
+		checkErr(err, c)
 	}
 
 	return table
@@ -54,19 +52,42 @@ func selectAll(table interface{}, c *gin.Context) interface{} {
 func selectUserID(ID int, c *gin.Context) (user, *gorm.DB) {
 
 	db := dbConnect()
-	var userFind user
+	var user user
 
-	if err := db.Where("id = ?", ID).First(&userFind).Error; err != nil {
-		checkErr(err, 500, c)
+	if err := db.Where("id = ?", ID).First(&user).Error; err != nil {
+		checkErr(err, c)
 	}
 
-	return userFind, db
-
+	return user, db
 }
 
-func checkErr(err error, statusCode int, c *gin.Context) {
+func selectDebtByID(ID string, c *gin.Context) (debt, *gorm.DB) {
+
+	db := dbConnect()
+	var debt debt
+
+	if err := db.Where("id = ?", ID).First(&debt).Error; err != nil {
+		checkErr(err, c)
+	}
+
+	return debt, db
+}
+
+func selectDebtsByUser(userID int, c *gin.Context) []debt {
+
+	db := dbConnect()
+	var debts []debt
+
+	if err := db.Where("user_id = ?", userID).Find(&debts).Error; err != nil {
+		checkErr(err, c)
+	}
+
+	return debts
+}
+
+func checkErr(err error, c *gin.Context) {
 	if err != nil {
-		c.AbortWithError(statusCode, err)
+		c.AbortWithError(500, err)
 		return
 	}
 }

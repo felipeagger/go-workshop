@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"go-workshop/src"
-
+	"github.com/felipeagger/go-workshop/src"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +14,9 @@ func main() {
 	health := engine.Group("/")
 
 	userRoute := engine.Group("/user")
+	debtRoute := engine.Group("/debt")
+
+	src.AutoMigration()
 
 	//User
 	userRoute.GET("/", src.GetUsers)
@@ -23,13 +25,21 @@ func main() {
 	userRoute.PUT("/:id", src.PutUser)
 	userRoute.DELETE("/:id", src.DeleteUser)
 
-	src.AutoMigration()
+	userRoute.GET("/:id/debts", src.GetDebtsByUser)
+
+	//Debt
+	debtRoute.GET("/", src.GetDebts)
+	debtRoute.GET("/:id", src.GetDebt)
+	debtRoute.POST("/", src.PostDebt)
+	debtRoute.PUT("/:id", src.PutDebt)
+	debtRoute.DELETE("/:id", src.DeleteDebt)
 
 	health.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"status": "Go healthy!",
+			"message": "Go healthy!",
 		})
 	})
 
 	engine.Run(fmt.Sprintf(":%v", os.Getenv("PORT")))
+
 }
